@@ -28,9 +28,7 @@
 
 <br>
 
-
-NanoPop is an ultra-tiny positioning engine. But **wait** isn't there [PopperJS](https://github.com/popperjs/popper-core)? Yeah - and PopperJS is great! But there are tons of features
-you might not need in most cases. This library is _brotlied_ only ~ 700 Bytes (PopperJS is around 3kB).
+NanoPop is an ultra-tiny positioning engine. But **wait** isn't there [PopperJS](https://github.com/popperjs/popper-core)? Yeah - and PopperJS is great! But there are tons of features you might not need in most cases. This library is brotlied only ~ 700 Bytes (PopperJS is around 3kB).
 
 ## Getting Started
 6
@@ -68,7 +66,7 @@ nanopop.update();
 ```
 
 
-##### All options
+#### All options
 ```js
 const nanopop = new NanoPop(reference, popper, {
 
@@ -102,10 +100,14 @@ const nanopop = new NanoPop(reference, popper, {
 ```
 
 ### Functions
-* `nanopop.update(Partial<Options>)` _- Update the position and optionally update the options of this nanopop instance._
+* `nanopop.update(Partial<Options>)` _- Update the position and optionally update the options of this NanoPop instance._
 
 ### Properties
 * `nanopop.version` _- Current version._
+
+These are static default-values used in case you're not specifying something else:
+* `NanoPop.defaultVariantFlipOrder` _- Default `variantFlipOrder` values._
+* `NanoPop.defaultPositionFlipOrder` _- Default `positionFlipOrder`._
 
 ### Caveats
 1. `window` is (currently) the only bounding-element supported.
