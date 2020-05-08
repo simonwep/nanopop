@@ -1,0 +1,10 @@
+
+# Node-modules
+node_modules/
+
+# IntelliJ, build files and misc
+*.iml
+.idea
+.psd
+.test
+lib
