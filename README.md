@@ -31,7 +31,7 @@
 NanoPop is an ultra-tiny positioning engine. But **wait** isn't there [PopperJS](https://github.com/popperjs/popper-core)? Yeah - and PopperJS is great! But there are tons of features you might not need in most cases. This library is brotlied only ~ 700 Bytes (PopperJS is around 3kB).
 
 ## Getting Started
-6
+
 Install via npm:
 ```shell
 $ npm install nanopop
