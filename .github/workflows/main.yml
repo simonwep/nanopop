@@ -2,6 +2,10 @@ name: CI
 
 on: ["push", "pull_request"]
 
+env:
+    PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
+    CI: true
+
 jobs:
     build:
 
@@ -17,6 +21,7 @@ jobs:
 
             -   name: Install dependencies, build, lint and test
                 run: |
+                    sudo apt install chromium-browser -y
                     npm ci
                     npm run lint
                     npm run build
