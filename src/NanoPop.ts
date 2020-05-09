@@ -170,7 +170,7 @@ export class NanoPop {
             const [positionLimit, variantLimit] = vertical ? [innerHeight, innerWidth] : [innerWidth, innerHeight];
 
             // Skip pre-clipped values
-            if (mainVal < 0 || (mainVal + margin + positionBox) > positionLimit) {
+            if (mainVal < 0 || Math.round(mainVal + positionBox) > positionLimit) {
                 continue;
             }
 
@@ -188,13 +188,12 @@ export class NanoPop {
                 // The position-value, the related size value of the popper and the limit
                 const variantVal = variantStore[((vertical ? 'v' : 'h') + v) as keyof AvailableVariants];
 
-                if (variantVal < 0 || (variantVal + margin + variantBox) > variantLimit) {
+                if (variantVal < 0 || Math.round(variantVal + variantBox) > variantLimit) {
                     continue;
                 }
 
                 lastApplied[variantKey as keyof LastAppliedValues] = variantVal;
                 ok = true;
-
                 break outer;
             }
         }
