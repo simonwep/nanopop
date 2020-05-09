@@ -21,6 +21,7 @@ jobs:
 
             -   name: Install dependencies, build, lint and test
                 run: |
+                    sudo apt update
                     sudo apt install chromium-browser -y
                     npm ci
                     npm run lint
