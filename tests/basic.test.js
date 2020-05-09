@@ -10,6 +10,16 @@ describe('All positions and default values', () => {
         expect(await page.screenshot()).toMatchImageSnapshot();
     });
 
+    it('Should work with large poppers', async () => {
+        await page.goto(`${URL_BASE}/basic-large-popper.html`);
+        expect(await page.screenshot()).toMatchImageSnapshot();
+    });
+
+    it('Should work with large poppers v2', async () => {
+        await page.goto(`${URL_BASE}/basic-large-popper-2.html`);
+        expect(await page.screenshot()).toMatchImageSnapshot();
+    });
+
     // Test all possible combinations
     const positions = ['top', 'bottom', 'left', 'right'];
     const variants = ['start', 'middle', 'end'];

@@ -15,11 +15,6 @@ describe('Repositioning', () => {
         expect(await page.screenshot()).toMatchImageSnapshot();
     });
 
-    it('Should work with large poppers', async () => {
-        await page.goto(`${URL_BASE}/basic-large-popper.html`);
-        expect(await page.screenshot()).toMatchImageSnapshot();
-    });
-
     // Test corners with default options
     const positions = ['top', 'bottom', 'left', 'right'];
     for (const position of positions) {

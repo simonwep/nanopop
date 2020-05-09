@@ -166,7 +166,7 @@ export class NanoPop {
              * box refers to the size of the popper element. Depending on the orientation this is width or height.
              * The limit is the corresponding, maximum value for this position.
              */
-            const [positionBox, variantBox] = vertical ? [popBox.height, popBox.height] : [popBox.width, popBox.height];
+            const [positionBox, variantBox] = vertical ? [popBox.height, popBox.width] : [popBox.width, popBox.height];
             const [positionLimit, variantLimit] = vertical ? [innerHeight, innerWidth] : [innerWidth, innerHeight];
 
             // Skip pre-clipped values
