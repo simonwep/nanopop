@@ -45,9 +45,17 @@ type AvailablePositions = {
 };
 
 type AvailableVariants = {
-    s: number;
-    m: number;
-    e: number;
+    vs: number;
+    vm: number;
+    ve: number;
+    hs: number;
+    hm: number;
+    he: number;
+};
+
+type LastAppliedValues = {
+    left: number;
+    top: number;
 };
 
 export class NanoPop {
@@ -97,13 +105,6 @@ export class NanoPop {
             positionFlipOrder
         } = this._config = {...this._config, ...opt};
 
-        // Extract position and variant
-        // Top-start -> top is "position" and "start" is the variant
-        const [pos, variant = 'middle'] = position.split('-');
-
-        // It's vertical if top or bottom is used as position
-        const isVertical = (pos === 'top' || pos === 'bottom');
-
         /**
          * Reset position to resolve viewport
          * See https://developer.mozilla.org/en-US/docs/Web/CSS/position#fixed
@@ -111,58 +112,67 @@ export class NanoPop {
         popper.style.left = '0';
         popper.style.top = '0';
 
-        const rb = reference.getBoundingClientRect();
-        const eb = popper.getBoundingClientRect();
+        const refBox = reference.getBoundingClientRect();
+        const popBox = popper.getBoundingClientRect();
 
         /**
          * Holds coordinates of top, left, bottom and right alignment
          */
-        const positions: AvailablePositions = {
-            t: rb.top - eb.height - margin,
-            b: rb.bottom + margin,
-            r: rb.right + margin,
-            l: rb.left - eb.width - margin
+        const positionStore: AvailablePositions = {
+            t: refBox.top - popBox.height - margin,
+            b: refBox.bottom + margin,
+            r: refBox.right + margin,
+            l: refBox.left - popBox.width - margin
         };
 
         /**
          * Holds corresponding variants (start, middle, end).
          * The values depend on horizontal / vertical orientation
          */
-        const variants = (vertical: boolean): AvailableVariants => vertical ? {
-            s: rb.left + rb.width - eb.width,
-            m: (-eb.width / 2) + (rb.left + rb.width / 2),
-            e: rb.left
-        } : {
-            s: rb.bottom - eb.height,
-            m: rb.bottom - rb.height / 2 - eb.height / 2,
-            e: rb.bottom - rb.height
+        const variantStore: AvailableVariants = {
+            vm: (-popBox.width / 2) + (refBox.left + refBox.width / 2),
+            vs: refBox.left,
+            ve: refBox.left + refBox.width - popBox.width,
+            hs: refBox.bottom - refBox.height,
+            he: refBox.bottom - popBox.height,
+            hm: refBox.bottom - refBox.height / 2 - popBox.height / 2
         };
+
+        // Extract position and variant
+        // Top-start -> top is "position" and "start" is the variant
+        const [posKey, varKey = 'middle'] = position.split('-');
+        const positions = positionFlipOrder[posKey as keyof PositionFlipOrder];
+        const variants = variantFlipOrder[varKey as keyof VariantFlipOrder];
 
         // Holds the last working positions
-        const lastApplied = {
-            top: '0px', left: '0px'
+        const lastApplied: LastAppliedValues = {
+            top: 0, left: 0
         };
 
-        /**
-         * Applies a position, example procedure with top-start: it'll
-         * first try to satisfy the variant "start", if this fails it tries
-         * the remaining variants (in this case "middle" and "end")
-         *
-         * @param positions Array of positions in the order they should be applied
-         * @param positionVariants Variants, the first should be the one initially wanted
-         * @param targetProperty The target property, defines if this is a horizontal or vertical aligment
-         * @returns a value for targetProperty or null if none fits
-         */
-        const findFittingValue = <T extends string>(
-            positions: T,
-            positionVariants: {[key: string]: number},
-            targetProperty: 'top' | 'left'
-        ): string | null => {
-            const vertical = targetProperty === 'top';
+        // Try out all possible combinations, starting with the preferred one.
+        const {innerHeight, innerWidth} = window;
+        let ok = false;
 
-            // The size of the element and the window-boundary
-            const elementSize = vertical ? eb.height : eb.width;
-            const windowSize = window[vertical ? 'innerHeight' : 'innerWidth'];
+        outer: for (const p of positions) {
+            const vertical = (p === 't' || p === 'b');
+
+            // The position/variant-value, the related size value of the popper and the limit
+            const mainVal = positionStore[p as keyof AvailablePositions];
+
+            // Which property has to be changes.
+            const [positionKey, variantKey] = vertical ? ['top', 'left'] : ['left', 'top'];
+
+            /**
+             * box refers to the size of the popper element. Depending on the oritentation this is width or height.
+             * The limit is the corresponding, maximum value for this position.
+             */
+            const [positionBox, variantBox] = vertical ? [popBox.width, popBox.height] : [popBox.height, popBox.width];
+            const [positionLimit, variantLimit] = vertical ? [innerHeight, innerWidth] : [innerWidth, innerHeight];
+
+            // Skip pre-clipped values
+            if (mainVal < 0 || (mainVal + margin + positionBox) > positionLimit) {
+                continue;
+            }
 
             /**
              * As previously mentioned the viewport is not always the same.
@@ -171,63 +181,29 @@ export class NanoPop {
              *
              * Therefore we need to "normalize" both coordinates.
              */
-            const viewPortAdjustment = vertical ? eb.top : eb.left;
 
-            for (const posChar of positions) {
-                const wantedValue = positionVariants[posChar];
-                const wantedValueAsString =
-                    lastApplied[targetProperty] =
-                        `${wantedValue - viewPortAdjustment}px`;
+            lastApplied[positionKey as keyof LastAppliedValues] = mainVal;
+            for (const v of variants) {
 
-                if (wantedValue > 0 && (wantedValue + elementSize) < windowSize) {
-                    return wantedValueAsString;
+                // The position-value, the related size value of the popper and the limit
+                const variantVal = variantStore[((vertical ? 'v' : 'h') + v) as keyof AvailableVariants];
+
+                if (variantVal < 0 || (variantVal + margin + variantBox) > variantLimit) {
+                    continue;
                 }
-            }
 
-            return null;
-        };
+                lastApplied[variantKey as keyof LastAppliedValues] = variantVal;
+                ok = true;
 
-
-        /**
-         * We first try to find the satisfy the wanted orientation (vertical or horizontal)
-         * and if this fails the opposite, either horizontal or vertical, will be tried.
-         */
-        for (const vertical of [isVertical, !isVertical]) {
-
-            /**
-             * va and vb both define where the element is positioned (top, bottom, left, right)
-             * and it's corresponding variant (start, middle, end). Since we're "rotating" the element
-             * to ensure to (hopefully) find at least one fitting position the values need to be
-             * defined during runtime.
-             */
-            const vaType = vertical ? 'top' : 'left';
-            const vbType = vertical ? 'left' : 'top';
-
-            // Actual values for top and bottom
-            const vaValue = findFittingValue(
-                positionFlipOrder[pos as keyof PositionFlipOrder],
-                positions, vaType
-            );
-
-            const vbValue = findFittingValue(
-                variantFlipOrder[variant as keyof VariantFlipOrder],
-                variants(vertical),
-                vbType
-            );
-
-            // Both values work, apply them
-            if (vaValue && vbValue) {
-                popper.style[vbType] = vbValue;
-                popper.style[vaType] = vaValue;
-                return true;
+                break outer;
             }
         }
 
-        if (forceApplyOnFailure) {
-            popper.style.left = lastApplied.left;
-            popper.style.top = lastApplied.top;
+        if (ok || forceApplyOnFailure) {
+            popper.style.left = `${lastApplied.left - popBox.left}px`;
+            popper.style.top = `${lastApplied.top - popBox.top}px`;
         }
 
-        return false;
+        return ok;
     }
 }
