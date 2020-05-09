@@ -1,0 +1,30 @@
+<div id="container">
+    <div id="reference"></div>
+    <div id="popper"></div>
+</div>
+
+<style>
+    @import './reset.css';
+
+    #reference {
+        width: 40px;
+        height: 40px;
+        margin-top: 10px;
+        margin-left: 10px;
+    }
+
+    #popper {
+        width: 100px;
+        height: 100px;
+    }
+</style>
+
+<script type="module">
+    import {NanoPop} from '/lib/nanopop.min.mjs';
+
+    const reference = document.querySelector('#reference');
+    const popper = document.querySelector('#popper');
+
+    window.instance = new NanoPop(reference, popper);
+    window.instance.update();
+</script>

@@ -15,8 +15,9 @@ jobs:
                 with:
                     node-version: 12.x
 
-            -   name: Install dependencies, build and lint
+            -   name: Install dependencies, build, lint and test
                 run: |
                     npm ci
                     npm run lint
                     npm run build
+                    npm run test
