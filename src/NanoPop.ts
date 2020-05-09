@@ -163,10 +163,10 @@ export class NanoPop {
             const [positionKey, variantKey] = vertical ? ['top', 'left'] : ['left', 'top'];
 
             /**
-             * box refers to the size of the popper element. Depending on the oritentation this is width or height.
+             * box refers to the size of the popper element. Depending on the orientation this is width or height.
              * The limit is the corresponding, maximum value for this position.
              */
-            const [positionBox, variantBox] = vertical ? [popBox.width, popBox.height] : [popBox.height, popBox.width];
+            const [positionBox, variantBox] = vertical ? [popBox.height, popBox.height] : [popBox.width, popBox.height];
             const [positionLimit, variantLimit] = vertical ? [innerHeight, innerWidth] : [innerWidth, innerHeight];
 
             // Skip pre-clipped values
