@@ -1,6 +1,6 @@
 {
     "name": "nanopop",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "Ultra tiny, opinionated, positioning engine.",
     "main": "./lib/nanopop.min.js",
     "module": "./lib/nanopop.min.mjs",
