@@ -30,6 +30,14 @@
 
 NanoPop is an ultra-tiny positioning engine. But **wait** isn't there [PopperJS](https://github.com/popperjs/popper-core)? Yeah - and PopperJS is great! But there are tons of features you might not need in most cases. This library is brotlied only ~ 700 Bytes (PopperJS is around 3kB).
 
+#### What are the use-cases compared to PopperJS?
+1. Situations where you want **full controll** over positioning, including handling events such as scrolling / resize manually.
+2. **Performance-critical** cases with lots of elements [...] nanopop will only makes changes if you say so.
+3. Poppers with **minimal footprint** such as drop-downs and tooltips which don't require much configurability.
+4. You might have some special needs about how your popper behaves. NanoPop could be used as super-class and you can, based on what's required, extend NanoPop as you will :)
+
+This library was originally part of [pickr](https://github.com/Simonwep/pickr) - now ported to TS with tests and a few updates / bug-fixes.
+
 ## Getting Started
 
 Install via npm:
@@ -65,6 +73,7 @@ const nanopop = new NanoPop(reference, popper);
 nanopop.update();
 ```
 
+> The popper-element must have set `position` to `fixed`.
 
 #### All options
 ```js
@@ -79,6 +88,7 @@ const nanopop = new NanoPop(reference, popper, {
     // Sometimes there's no way to position the popper element without clipping it.
     // Turn this on if you want to apply the latest tried values to the popper element.
     // The .update() function will return false in any case it fails so you can handle this separately.
+    // Attention: If this is set to false and you do not take care about handling the clipped element yourself it'll be positioned on the top-left corner of the container-element (most of the time this is the document element itself). 
     forceApplyOnFailure: false,
 
     // In case the variant-part (start, middle or end) cannot be applied you can specify what (and if)
@@ -100,7 +110,7 @@ const nanopop = new NanoPop(reference, popper, {
 ```
 
 ### Functions
-* `nanopop.update(Partial<Options>)` _- Update the position and optionally update the options of this NanoPop instance._
+* `nanopop.update(Partial<Options>)` _- Update the position and optionally update the options of this NanoPop instance. It'll return `true` or `false` based on if it was possible to find a position for the popper without clipping it._
 
 ### Properties
 * `nanopop.version` _- Current version._
