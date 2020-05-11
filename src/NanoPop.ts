@@ -204,7 +204,6 @@ export class NanoPop {
             popper.style.top = `${lastApplied.top - popBox.top}px`;
         } else if (forceApplyOnFailure) {
             this.update(undefined, true);
-            return true;
         }
 
         return ok;
