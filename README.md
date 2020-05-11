@@ -86,9 +86,9 @@ const nanopop = new NanoPop(reference, popper, {
     position: 'bottom-start',
 
     // Sometimes there's no way to position the popper element without clipping it.
-    // Turn this on if you want to apply the latest tried values to the popper element.
+    // Turn this on if, in case there's no non-clipping position, want to apply the wanted position forcefully.
     // The .update() function will return false in any case it fails so you can handle this separately.
-    // Attention: If this is set to false and you do not take care about handling the clipped element yourself it'll be positioned on the top-left corner of the container-element (most of the time this is the document element itself). 
+    // Attention: If this is set to false and you do not take care about handling the clipped element yourself it'll be positioned on the top-left corner of the container-element (most of the time this is the document element itself).
     forceApplyOnFailure: false,
 
     // In case the variant-part (start, middle or end) cannot be applied you can specify what (and if)

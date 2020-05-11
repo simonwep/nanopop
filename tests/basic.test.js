@@ -20,6 +20,11 @@ describe('All positions and default values', () => {
         expect(await page.screenshot()).toMatchImageSnapshot();
     });
 
+    it('Should work with forceApplyOnFailure set to true', async () => {
+        await page.goto(`${URL_BASE}/basic-force-apply-on-failure.html`);
+        expect(await page.screenshot()).toMatchImageSnapshot();
+    });
+
     // Test all possible combinations
     const positions = ['top', 'bottom', 'left', 'right'];
     const variants = ['start', 'middle', 'end'];

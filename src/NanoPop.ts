@@ -94,7 +94,7 @@ export class NanoPop {
      * Re-aligns the element
      * @param opt Optional, updated settings
      */
-    update(opt: Partial<InternalSettings> = this._config): boolean {
+    update(opt: Partial<InternalSettings> = this._config, _force = false): boolean {
         const {
             reference,
             popper,
@@ -170,9 +170,28 @@ export class NanoPop {
             const [positionLimit, variantLimit] = vertical ? [innerHeight, innerWidth] : [innerWidth, innerHeight];
 
             // Skip pre-clipped values
-            if (mainVal < 0 || Math.round(mainVal + positionBox) > positionLimit) {
+            if (!_force && (mainVal < 0 || Math.round(mainVal + positionBox) > positionLimit)) {
                 continue;
             }
+
+            for (const v of variants) {
+
+                // The position-value, the related size value of the popper and the limit
+                const variantVal = variantStore[((vertical ? 'v' : 'h') + v) as keyof AvailableVariants];
+
+                if (!_force && (variantVal < 0 || Math.round(variantVal + variantBox) > variantLimit)) {
+                    continue;
+                }
+
+                // Save values
+                lastApplied[variantKey as keyof LastAppliedValues] = variantVal;
+                lastApplied[positionKey as keyof LastAppliedValues] = mainVal;
+                ok = true;
+                break outer;
+            }
+        }
+
+        if (ok) {
 
             /**
              * As previously mentioned the viewport is not always the same.
@@ -181,26 +200,11 @@ export class NanoPop {
              *
              * Therefore we need to "normalize" both coordinates.
              */
-
-            lastApplied[positionKey as keyof LastAppliedValues] = mainVal;
-            for (const v of variants) {
-
-                // The position-value, the related size value of the popper and the limit
-                const variantVal = variantStore[((vertical ? 'v' : 'h') + v) as keyof AvailableVariants];
-
-                if (variantVal < 0 || Math.round(variantVal + variantBox) > variantLimit) {
-                    continue;
-                }
-
-                lastApplied[variantKey as keyof LastAppliedValues] = variantVal;
-                ok = true;
-                break outer;
-            }
-        }
-
-        if (ok || forceApplyOnFailure) {
             popper.style.left = `${lastApplied.left - popBox.left}px`;
             popper.style.top = `${lastApplied.top - popBox.top}px`;
+        } else if (forceApplyOnFailure) {
+            this.update(undefined, true);
+            return true;
         }
 
         return ok;
