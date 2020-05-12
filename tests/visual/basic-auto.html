@@ -30,5 +30,8 @@
     const popper = document.querySelector('#popper');
 
     window.instance = new NanoPop(reference, popper);
-    window.instance.update();
+
+    if (window.instance.update() !== 'bs') {
+        throw 'Should return the applied position on update';
+    }
 </script>

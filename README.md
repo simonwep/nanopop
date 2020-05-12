@@ -110,7 +110,10 @@ const nanopop = new NanoPop(reference, popper, {
 ```
 
 ### Functions
-* `nanopop.update(Partial<Options>)` _- Update the position and optionally update the options of this NanoPop instance. It'll return `true` or `false` based on if it was possible to find a position for the popper without clipping it._
+* `nanopop.update(newOptions?: Partial<Options>)` _- Update the position and optionally update the options of this NanoPop instance.
+It'll return a position-pair (For example `te` for **T**op-**E**nd) or `null` based on if it was possible to find a position for the popper without clipping it._
+
+> Tip: The returned position-pair is perfect for tool-tips to give them a little arrow!
 
 ### Properties
 * `nanopop.version` _- Current version._

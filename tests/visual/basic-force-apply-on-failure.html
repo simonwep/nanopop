@@ -34,5 +34,7 @@
         forceApplyOnFailure: true
     });
 
-    window.instance.update();
+    if (window.instance.update() !== 'tm') {
+        throw 'Should return the applied position on update';
+    }
 </script>

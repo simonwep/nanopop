@@ -27,6 +27,8 @@ export type NanoPopPositionCombination =
     'right-start' | 'right-middle' | 'right-end' |
     'bottom-start' | 'bottom-middle' | 'bottom-end' | NanoPopPosition;
 
+type PositionPairs = [NanoPopPosition, NanoPopPosition];
+
 type InternalSettings = {
     forceApplyOnFailure: boolean;
     position: NanoPopPositionCombination;
@@ -89,7 +91,7 @@ export class NanoPop {
      * Re-aligns the element
      * @param opt Optional, updated settings
      */
-    update(opt: Partial<InternalSettings> = this._config, _force = false): boolean {
+    update(opt: Partial<InternalSettings> = this._config, _force = false): string | null {
         const {
             reference,
             popper,
@@ -149,7 +151,7 @@ export class NanoPop {
             const mainVal = positionStore[p as keyof AvailablePositions];
 
             // Which property has to be changes.
-            const [positionKey, variantKey] = vertical ? ['top', 'left'] : ['left', 'top'];
+            const [positionKey, variantKey] = (vertical ? ['top', 'left'] : ['left', 'top']) as PositionPairs;
 
             /**
              * box refers to the size of the popper element. Depending on the orientation this is width or height.
@@ -173,16 +175,16 @@ export class NanoPop {
                 }
 
                 // Apply styles and normalize viewport
-                popper.style[variantKey as NanoPopPosition] = `${variantVal - popBox[variantKey as NanoPopPosition]}px`;
-                popper.style[positionKey as NanoPopPosition] = `${mainVal - popBox[positionKey as NanoPopPosition]}px`;
-                return true;
+                popper.style[variantKey] = `${variantVal - popBox[variantKey]}px`;
+                popper.style[positionKey] = `${mainVal - popBox[positionKey]}px`;
+                return p + v;
             }
         }
 
         if (forceApplyOnFailure) {
-            this.update(undefined, true);
+            return this.update(undefined, true);
         }
 
-        return false;
+        return null;
     }
 }
