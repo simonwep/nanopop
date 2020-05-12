@@ -53,11 +53,6 @@ type AvailableVariants = {
     he: number;
 };
 
-type LastAppliedValues = {
-    left: number;
-    top: number;
-};
-
 export class NanoPop {
 
     // Public version
@@ -144,16 +139,10 @@ export class NanoPop {
         const positions = positionFlipOrder[posKey as keyof PositionFlipOrder];
         const variants = variantFlipOrder[varKey as keyof VariantFlipOrder];
 
-        // Holds the last working positions
-        const lastApplied: LastAppliedValues = {
-            top: 0, left: 0
-        };
-
         // Try out all possible combinations, starting with the preferred one.
         const {innerHeight, innerWidth} = window;
-        let ok = false;
 
-        outer: for (const p of positions) {
+        for (const p of positions) {
             const vertical = (p === 't' || p === 'b');
 
             // The position/variant-value, the related size value of the popper and the limit
@@ -183,29 +172,17 @@ export class NanoPop {
                     continue;
                 }
 
-                // Save values
-                lastApplied[variantKey as keyof LastAppliedValues] = variantVal;
-                lastApplied[positionKey as keyof LastAppliedValues] = mainVal;
-                ok = true;
-                break outer;
+                // Apply styles and normalize viewport
+                popper.style[variantKey as NanoPopPosition] = `${variantVal - popBox[variantKey as NanoPopPosition]}px`;
+                popper.style[positionKey as NanoPopPosition] = `${mainVal - popBox[positionKey as NanoPopPosition]}px`;
+                return true;
             }
         }
 
-        if (ok) {
-
-            /**
-             * As previously mentioned the viewport is not always the same.
-             * position: fixed always refers to the containing-block.
-             * See https://developer.mozilla.org/en-US/docs/Web/CSS/Containing_Block
-             *
-             * Therefore we need to "normalize" both coordinates.
-             */
-            popper.style.left = `${lastApplied.left - popBox.left}px`;
-            popper.style.top = `${lastApplied.top - popBox.top}px`;
-        } else if (forceApplyOnFailure) {
+        if (forceApplyOnFailure) {
             this.update(undefined, true);
         }
 
-        return ok;
+        return false;
     }
 }
