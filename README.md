@@ -79,6 +79,9 @@ nanopop.update();
 ```js
 const nanopop = new NanoPop(reference, popper, {
 
+    // The DOMRect of the container, this is the default:
+    container: document.documentElement.getBoundingClientRect(),
+
     // Margin between the popper element and the reference
     margin: 8,
 
@@ -124,7 +127,7 @@ These are static default-values used in case you're not specifying something els
 
 ### Caveats
 1. The popper-element must have `position` set to `fixed`.
-2. `window` is (currently) the only bounding-element supported.
+2. ~~`window` is (currently) the only bounding-element supported.~~
 3. The library does not perform any automatic updates if the window gets resized, or the user scrolls, you have to take care of that
 yourself and call `update()` in the case.
 4. You might have to fiddle around with `z-index` to make it work inside of complex, nested, scrollable containers.

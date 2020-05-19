@@ -1,5 +1,6 @@
 export type NanoPopOptions = {
     forceApplyOnFailure?: boolean;
+    container?: DOMRect;
     position?: NanoPopPositionCombination;
     margin?: number;
     variantFlipOrder?: VariantFlipOrder;
@@ -31,6 +32,7 @@ type PositionPairs = [NanoPopPosition, NanoPopPosition];
 
 type InternalSettings = {
     forceApplyOnFailure: boolean;
+    container: DOMRect;
     position: NanoPopPositionCombination;
     margin: number;
     variantFlipOrder: VariantFlipOrder;
@@ -71,6 +73,7 @@ export class NanoPop {
         popper: HTMLElement, {
             positionFlipOrder = NanoPop.defaultPositionFlipOrder,
             variantFlipOrder = NanoPop.defaultVariantFlipOrder,
+            container = document.documentElement.getBoundingClientRect(),
             forceApplyOnFailure = false,
             margin = 8,
             position = 'bottom-start'
@@ -82,6 +85,7 @@ export class NanoPop {
             reference,
             popper,
             position,
+            container,
             forceApplyOnFailure,
             margin
         };
@@ -93,6 +97,7 @@ export class NanoPop {
      */
     update(opt: Partial<InternalSettings> = this._config, _force = false): string | null {
         const {
+            container,
             reference,
             popper,
             margin,
@@ -142,7 +147,7 @@ export class NanoPop {
         const variants = variantFlipOrder[varKey as keyof VariantFlipOrder];
 
         // Try out all possible combinations, starting with the preferred one.
-        const {innerHeight, innerWidth} = window;
+        const {top, left, bottom, right} = container;
 
         for (const p of positions) {
             const vertical = (p === 't' || p === 'b');
@@ -158,10 +163,11 @@ export class NanoPop {
              * The limit is the corresponding, maximum value for this position.
              */
             const [positionBox, variantBox] = vertical ? [popBox.height, popBox.width] : [popBox.width, popBox.height];
-            const [positionLimit, variantLimit] = vertical ? [innerHeight, innerWidth] : [innerWidth, innerHeight];
+            const [positionLimit, variantLimit] = vertical ? [bottom, right] : [right, bottom];
+            const [positionMinimum, variantMinimum] = vertical ? [top, left] : [left, top];
 
             // Skip pre-clipped values
-            if (!_force && (mainVal < 0 || Math.round(mainVal + positionBox) > positionLimit)) {
+            if (!_force && (mainVal < positionMinimum || Math.round(mainVal + positionBox) > positionLimit)) {
                 continue;
             }
 
@@ -170,7 +176,7 @@ export class NanoPop {
                 // The position-value, the related size value of the popper and the limit
                 const variantVal = variantStore[((vertical ? 'v' : 'h') + v) as keyof AvailableVariants];
 
-                if (!_force && (variantVal < 0 || Math.round(variantVal + variantBox) > variantLimit)) {
+                if (!_force && (variantVal < variantMinimum || Math.round(variantVal + variantBox) > variantLimit)) {
                     continue;
                 }
 
