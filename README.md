@@ -28,12 +28,12 @@
 
 <br>
 
-NanoPop is an ultra-tiny positioning engine. But **wait** isn't there [PopperJS](https://github.com/popperjs/popper-core)? Yeah - and PopperJS is great! But there are tons of features you might not need in most cases. This library is brotlied only ~ 700 Bytes (PopperJS is around 3kB).
+NanoPop is an ultra-tiny positioning engine. But **wait**, isn't there [PopperJS](https://github.com/popperjs/popper-core)? Yeah - and PopperJS is great! But there are tons of features that, in most cases, you just might not need. This library is only around ~ 700 Bytes brotlied (PopperJS is around 3kB).
 
-#### What are the use-cases compared to PopperJS?
-1. Situations where you want **full controll** over positioning, including handling events such as scrolling / resize manually.
+#### When should I use Nanopop and not PopperJS?
+1. Situations where you want **full control** over positioning, including handling events such as scrolling, and manual resizing.
 2. **Performance-critical** cases with lots of elements [...] nanopop will only makes changes if you say so.
-3. Poppers with **minimal footprint** such as drop-downs and tooltips which don't require much configurability.
+3. Poppers with **minimal footprint** such as drop-downs and tooltips which don't require that much configurability.
 4. You might have some special needs about how your popper behaves. NanoPop could be used as super-class and you can, based on what's required, extend NanoPop as you will :)
 
 This library was originally part of [pickr](https://github.com/Simonwep/pickr) - now ported to TS with tests and a few updates / bug-fixes.
@@ -89,7 +89,7 @@ const nanopop = new NanoPop(reference, popper, {
     position: 'bottom-start',
 
     // Sometimes there's no way to position the popper element without clipping it.
-    // Turn this on if, in case there's no non-clipping position, want to apply the wanted position forcefully.
+    // Turn this on if you, in case there's no non-clipping position, want to apply the wanted position forcefully.
     // The .update() function will return false in any case it fails so you can handle this separately.
     // Attention: If this is set to false and you do not take care about handling the clipped element yourself it'll be positioned on the top-left corner of the container-element (most of the time this is the document element itself).
     forceApplyOnFailure: false,
@@ -128,6 +128,5 @@ These are static default-values used in case you're not specifying something els
 ### Caveats
 1. The popper-element must have `position` set to `fixed`.
 2. ~~`window` is (currently) the only bounding-element supported.~~
-3. The library does not perform any automatic updates if the window gets resized, or the user scrolls, you have to take care of that
-yourself and call `update()` in the case.
+3. The library does not perform any automatic updates if the window gets resized, or the user scrolls, so you have to take care of that yourself and call `update()` in the case.
 4. You might have to fiddle around with `z-index` to make it work inside of complex, nested, scrollable containers.
