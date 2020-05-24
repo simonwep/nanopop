@@ -25,6 +25,9 @@ for (let i = 0; i < varControls.length; i++) {
     varControls[i].addEventListener('click', () => (v = i, update()));
 }
 
-update();
+requestAnimationFrame(() => {
+    update();
+    popper.style.visibility = 'visible';
+});
 
 window.addEventListener('resize', update);

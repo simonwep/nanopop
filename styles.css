@@ -50,22 +50,47 @@ body > p {
     color: var(--text);
 }
 
-body > a {
-    color: var(--text);
+.gh-link {
+    display: flex;
+    align-items: center;
     background: var(--active);
-    text-decoration: none;
-    padding: 0.5vmin 1.5vmin;
-    margin-top: 2vmin;
+    padding: 0.5em 1em;
+    margin-top: 1.5em;
     border-radius: 55em;
+    font-size: 0.85em;
     box-shadow: 0 0.25vmin 1vmin var(--active);
 }
 
+.gh-link svg {
+    fill: var(--text);
+    width: 1.5em;
+    height: 1.5em;
+}
+
+.gh-link a {
+    text-decoration: none;
+    color: var(--text);
+    margin-left: 0.5em;
+    font-weight: 600;
+}
+
 .popper {
+    font-size: 2.25vmin;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: fixed;
-    width: 5vmin;
-    height: 5vmin;
+    width: 2em;
+    height: 2em;
     background: var(--secondary);
-    border-radius: 0.25vmin;
+    border-radius: 0.25em;
+    visibility: hidden;
+}
+
+.popper svg {
+    width: 1em;
+    height: 1em;
+    fill: var(--text-secondary);
 }
 
 .reference {
@@ -73,7 +98,7 @@ body > a {
     height: 10vmin;
     background: var(--primary);
     margin: 15vmin 0;
-    border-radius: 0.5vmin;
+    border-radius: 0.25em;
 }
 
 .controls {
@@ -125,9 +150,8 @@ body > a {
 }
 
 @media screen and (max-width: 475px) {
-    body > a {
-        padding: 2vmin 5vmin;
-        margin-top: 5vmin;
+    .gh-link {
+        font-size: 1em;
     }
 
     .reference {
@@ -137,8 +161,7 @@ body > a {
     }
 
     .popper {
-        width: 10vmin;
-        height: 10vmin;
+        font-size: 1.25em;
     }
 
     .controls {
