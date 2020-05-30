@@ -73,7 +73,9 @@ const nanopop = new NanoPop(reference, popper);
 nanopop.update();
 ```
 
-> The popper-element must have set `position` to `fixed`.
+> ⚠ The popper-element must have set `position` to `fixed`.
+
+> ℹ Because the default-`container` is `document.documentElement` you might have to increase the `height` of the `html` element to make room for your popper (e.g. `html {height: 100vh;}`)
 
 #### All options
 ```js
