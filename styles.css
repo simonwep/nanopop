@@ -59,6 +59,7 @@ body > p {
     border-radius: 55em;
     font-size: 0.85em;
     box-shadow: 0 0.25vmin 1vmin var(--active);
+    text-decoration: none;
 }
 
 .gh-link svg {
@@ -67,8 +68,7 @@ body > p {
     height: 1.5em;
 }
 
-.gh-link a {
-    text-decoration: none;
+.gh-link span {
     color: var(--text);
     margin-left: 0.5em;
     font-weight: 600;
@@ -94,6 +94,7 @@ body > p {
 }
 
 .reference {
+    font-size: 2.25vmin;
     width: 10vmin;
     height: 10vmin;
     background: var(--primary);
@@ -155,6 +156,7 @@ body > p {
     }
 
     .reference {
+        font-size: 1.25em;
         margin: auto;
         width: 20vmin;
         height: 20vmin;
