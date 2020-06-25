@@ -45,6 +45,8 @@
         "jest-image-snapshot": "^4.0.2",
         "jest-playwright-preset": "^1.1.0",
         "playwright-chromium": "^1.1.1",
+        "playwright-firefox": "^1.1.1",
+        "playwright-webkit": "^1.1.1",
         "rollup": "^2.18.0",
         "rollup-plugin-terser": "^6.1.0",
         "serve": "^11.3.2",
