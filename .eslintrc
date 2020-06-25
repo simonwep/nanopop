@@ -7,12 +7,23 @@
     ],
     "env": {
         "browser": true,
-        "es6": true
+        "es6": true,
+        "jest": true
+    },
+    "globals": {
+        "page": true,
+        "VERSION": true,
+        "URL_BASE": true
     },
     "plugins": [
         "@typescript-eslint"
     ],
     "parserOptions": {
         "project": "./tsconfig.json"
+    },
+    "rules": {
+        "@typescript-eslint/restrict-template-expressions": "off",
+        "@typescript-eslint/no-unsafe-member-access": "off",
+        "@typescript-eslint/no-unsafe-call": "off"
     }
 }

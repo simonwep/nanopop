@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable */
 const {toMatchImageSnapshot} = require('jest-image-snapshot');
 require('expect-puppeteer');
 
