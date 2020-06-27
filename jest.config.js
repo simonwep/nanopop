@@ -1,8 +1,6 @@
 module.exports = {
-    preset: 'jest-puppeteer',
+    preset: 'jest-playwright-preset',
     coverageReporters: ['text'],
-    globalSetup: 'jest-environment-puppeteer/setup',
-    globalTeardown: 'jest-environment-puppeteer/teardown',
     setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
-    testTimeout: 20000
+    testTimeout: 35000 // Most timeouts in playwright are set to 30s
 };
