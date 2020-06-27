@@ -1,27 +1,29 @@
+const {loadVisualTest} = require('./utils');
+
 describe('All positions and default values', () => {
 
     it('Should work without any further options', async () => {
-        await page.goto(`${URL_BASE}/basic-auto.html`);
+        await loadVisualTest('basic-auto.html');
         expect(await page.screenshot()).toMatchImageSnapshot();
     });
 
     it('Should just middle if no variant is specified', async () => {
-        await page.goto(`${URL_BASE}/basic-without-variant.html`);
+        await loadVisualTest('basic-without-variant.html');
         expect(await page.screenshot()).toMatchImageSnapshot();
     });
 
     it('Should work with large poppers', async () => {
-        await page.goto(`${URL_BASE}/basic-large-popper.html`);
+        await loadVisualTest('basic-large-popper.html');
         expect(await page.screenshot()).toMatchImageSnapshot();
     });
 
     it('Should work with large poppers v2', async () => {
-        await page.goto(`${URL_BASE}/basic-large-popper-2.html`);
+        await loadVisualTest('basic-large-popper-2.html');
         expect(await page.screenshot()).toMatchImageSnapshot();
     });
 
     it('Should work with forceApplyOnFailure set to true', async () => {
-        await page.goto(`${URL_BASE}/basic-force-apply-on-failure.html`);
+        await loadVisualTest('basic-force-apply-on-failure.html');
         expect(await page.screenshot()).toMatchImageSnapshot();
     });
 
@@ -34,7 +36,7 @@ describe('All positions and default values', () => {
             const posStr = `${position}-${variant}`;
 
             it(`It should properly position ${posStr}`, async () => {
-                await page.goto(`${URL_BASE}/basic-custom-position.html#${posStr}`);
+                await loadVisualTest(`basic-custom-position.html#${posStr}`);
                 expect(await page.screenshot()).toMatchImageSnapshot();
             });
         }

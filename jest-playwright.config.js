@@ -11,7 +11,7 @@ module.exports = {
         }
     },
     serverOptions: {
-        command: 'serve .',
+        command: 'serve . -p 5000',
         port: 5000
     }
 };
