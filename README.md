@@ -52,7 +52,7 @@ $ yarn add nanopop
 
 Include directly via jsdelivr:
 ```html
-<script src="https://cdn.jsdelivr.net/npm/nanopop/lib/nanopop.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/nanopop@1.3.0/lib/nanopop.min.js"></script>
 ```
 
 Using [JavaScript Modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules):
