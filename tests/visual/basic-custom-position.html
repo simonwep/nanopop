@@ -24,14 +24,12 @@
 </style>
 
 <script type="module">
-    import {createPopper} from '/lib/nanopop.min.mjs';
+    import {reposition} from '/lib/nanopop.min.mjs';
 
     const reference = document.querySelector('#reference');
     const popper = document.querySelector('#popper');
 
-    window.instance = createPopper(reference, popper, {
+    reposition(reference, popper, {
         position: location.hash.slice(1)
     });
-
-    window.instance.update();
 </script>

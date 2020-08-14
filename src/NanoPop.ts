@@ -72,10 +72,119 @@ interface NanoPopConstructor {
 // Export current version
 export const version = VERSION;
 
-// Export default values
+// Export default
 export const defaults = {
-    defaultVariantFlipOrder: {start: 'sme', middle: 'mse', end: 'ems'},
-    defaultPositionFlipOrder: {top: 'tbrl', right: 'rltb', bottom: 'btrl', left: 'lrbt'}
+    variantFlipOrder: {start: 'sme', middle: 'mse', end: 'ems'},
+    positionFlipOrder: {top: 'tbrl', right: 'rltb', bottom: 'btrl', left: 'lrbt'},
+    forceApplyOnFailure: false,
+    position: 'bottom-start',
+    margin: 8
+};
+
+export const reposition = (
+    reference: HTMLElement,
+    popper: HTMLElement,
+    opt: Partial<NanoPopOptions>,
+    force?: boolean
+): PositionMatch | null => {
+    const {
+        container,
+        margin,
+        position,
+        forceApplyOnFailure,
+        variantFlipOrder,
+        positionFlipOrder
+    } = {
+        container: document.documentElement.getBoundingClientRect(),
+        ...defaults,
+        ...opt
+    };
+
+    /**
+     * Reset position to resolve viewport
+     * See https://developer.mozilla.org/en-US/docs/Web/CSS/position#fixed
+     */
+    popper.style.left = '0';
+    popper.style.top = '0';
+
+    const refBox = reference.getBoundingClientRect();
+    const popBox = popper.getBoundingClientRect();
+
+    /**
+     * Holds coordinates of top, left, bottom and right alignment
+     */
+    const positionStore: AvailablePositions = {
+        t: refBox.top - popBox.height - margin,
+        b: refBox.bottom + margin,
+        r: refBox.right + margin,
+        l: refBox.left - popBox.width - margin
+    };
+
+    /**
+     * Holds corresponding variants (start, middle, end).
+     * The values depend on horizontal / vertical orientation
+     */
+    const variantStore: AvailableVariants = {
+        vm: (-popBox.width / 2) + (refBox.left + refBox.width / 2),
+        vs: refBox.left,
+        ve: refBox.left + refBox.width - popBox.width,
+        hs: refBox.bottom - refBox.height,
+        he: refBox.bottom - popBox.height,
+        hm: refBox.bottom - refBox.height / 2 - popBox.height / 2
+    };
+
+    // Extract position and variant
+    // Top-start -> top is "position" and "start" is the variant
+    const [posKey, varKey = 'middle'] = position.split('-');
+    const positions = positionFlipOrder[posKey as keyof PositionFlipOrder];
+    const variants = variantFlipOrder[varKey as keyof VariantFlipOrder];
+
+    // Try out all possible combinations, starting with the preferred one.
+    const {top, left, bottom, right} = container;
+
+    for (const p of positions) {
+        const vertical = (p === 't' || p === 'b');
+
+        // The position-value
+        const positionVal = positionStore[p as keyof AvailablePositions];
+
+        // Which property has to be changes.
+        const [positionKey, variantKey] = (vertical ? ['top', 'left'] : ['left', 'top']) as PositionPairs;
+
+        /**
+         * box refers to the size of the popper element. Depending on the orientation this is width or height.
+         * The limit is the corresponding, maximum value for this position.
+         */
+        const [positionSize, variantSize] = vertical ? [popBox.height, popBox.width] : [popBox.width, popBox.height];
+        const [positionMaximum, variantMaximum] = vertical ? [bottom, right] : [right, bottom];
+        const [positionMinimum, variantMinimum] = vertical ? [top, left] : [left, top];
+
+        // Skip pre-clipped values
+        if (!force && (positionVal < positionMinimum || (positionVal + positionSize) > positionMaximum)) {
+            continue;
+        }
+
+        for (const v of variants) {
+
+            // The position-value, the related size value of the popper and the limit
+            const variantVal = variantStore[((vertical ? 'v' : 'h') + v) as keyof AvailableVariants];
+
+            if (!force && (variantVal < variantMinimum || (variantVal + variantSize) > variantMaximum)) {
+                continue;
+            }
+
+            // Apply styles and normalize viewport
+            popper.style[variantKey] = `${variantVal - popBox[variantKey]}px`;
+            popper.style[positionKey] = `${positionVal - popBox[positionKey]}px`;
+            return (p + v) as PositionMatch;
+        }
+    }
+
+    if (forceApplyOnFailure) {
+        return reposition(reference, popper, opt, true);
+    }
+
+    return null;
 };
 
 export const createPopper: NanoPopConstructor = (
@@ -83,126 +192,24 @@ export const createPopper: NanoPopConstructor = (
     popper?: HTMLElement,
     options?: Partial<NanoPopOptions>
 ) => {
-    const baseOptions: NanoPopOptions = {
-        positionFlipOrder: defaults.defaultPositionFlipOrder,
-        variantFlipOrder: defaults.defaultVariantFlipOrder,
-        container: document.documentElement.getBoundingClientRect(),
-        forceApplyOnFailure: false,
-        position: 'bottom-start',
-        margin: 8
-    };
+    let baseOptions: Partial<NanoPopOptions> = {};
 
     // Normalize arguments
     if (typeof reference === 'object' && !(reference instanceof HTMLElement)) {
-        Object.assign(baseOptions, reference);
+        baseOptions = reference;
     } else {
-        baseOptions.reference = reference;
-        baseOptions.popper = popper;
-        Object.assign(baseOptions, options);
+        baseOptions = {reference, popper, ...options};
     }
 
     return {
-        update(options: Partial<NanoPopOptions> = baseOptions, _force?: boolean): PositionMatch | null {
-            const {
-                container,
-                reference,
-                popper,
-                margin,
-                position,
-                forceApplyOnFailure,
-                variantFlipOrder,
-                positionFlipOrder
-            } = Object.assign(baseOptions, options);
+        update(options: Partial<NanoPopOptions> = baseOptions): PositionMatch | null {
+            const {reference, popper} = Object.assign(baseOptions, options);
 
             if (!popper || !reference) {
                 throw new Error('[NanoPop] Popper or reference element missing.');
             }
 
-            /**
-             * Reset position to resolve viewport
-             * See https://developer.mozilla.org/en-US/docs/Web/CSS/position#fixed
-             */
-            popper.style.left = '0';
-            popper.style.top = '0';
-
-            const refBox = reference.getBoundingClientRect();
-            const popBox = popper.getBoundingClientRect();
-
-            /**
-             * Holds coordinates of top, left, bottom and right alignment
-             */
-            const positionStore: AvailablePositions = {
-                t: refBox.top - popBox.height - margin,
-                b: refBox.bottom + margin,
-                r: refBox.right + margin,
-                l: refBox.left - popBox.width - margin
-            };
-
-            /**
-             * Holds corresponding variants (start, middle, end).
-             * The values depend on horizontal / vertical orientation
-             */
-            const variantStore: AvailableVariants = {
-                vm: (-popBox.width / 2) + (refBox.left + refBox.width / 2),
-                vs: refBox.left,
-                ve: refBox.left + refBox.width - popBox.width,
-                hs: refBox.bottom - refBox.height,
-                he: refBox.bottom - popBox.height,
-                hm: refBox.bottom - refBox.height / 2 - popBox.height / 2
-            };
-
-            // Extract position and variant
-            // Top-start -> top is "position" and "start" is the variant
-            const [posKey, varKey = 'middle'] = position.split('-');
-            const positions = positionFlipOrder[posKey as keyof PositionFlipOrder];
-            const variants = variantFlipOrder[varKey as keyof VariantFlipOrder];
-
-            // Try out all possible combinations, starting with the preferred one.
-            const {top, left, bottom, right} = container;
-
-            for (const p of positions) {
-                const vertical = (p === 't' || p === 'b');
-
-                // The position-value
-                const positionVal = positionStore[p as keyof AvailablePositions];
-
-                // Which property has to be changes.
-                const [positionKey, variantKey] = (vertical ? ['top', 'left'] : ['left', 'top']) as PositionPairs;
-
-                /**
-                 * box refers to the size of the popper element. Depending on the orientation this is width or height.
-                 * The limit is the corresponding, maximum value for this position.
-                 */
-                const [positionSize, variantSize] = vertical ? [popBox.height, popBox.width] : [popBox.width, popBox.height];
-                const [positionMaximum, variantMaximum] = vertical ? [bottom, right] : [right, bottom];
-                const [positionMinimum, variantMinimum] = vertical ? [top, left] : [left, top];
-
-                // Skip pre-clipped values
-                if (!_force && (positionVal < positionMinimum || (positionVal + positionSize) > positionMaximum)) {
-                    continue;
-                }
-
-                for (const v of variants) {
-
-                    // The position-value, the related size value of the popper and the limit
-                    const variantVal = variantStore[((vertical ? 'v' : 'h') + v) as keyof AvailableVariants];
-
-                    if (!_force && (variantVal < variantMinimum || (variantVal + variantSize) > variantMaximum)) {
-                        continue;
-                    }
-
-                    // Apply styles and normalize viewport
-                    popper.style[variantKey] = `${variantVal - popBox[variantKey]}px`;
-                    popper.style[positionKey] = `${positionVal - popBox[positionKey]}px`;
-                    return (p + v) as PositionMatch;
-                }
-            }
-
-            if (forceApplyOnFailure) {
-                return this.update(undefined, true);
-            }
-
-            return null;
+            return reposition(reference, popper, baseOptions);
         }
     };
 };
