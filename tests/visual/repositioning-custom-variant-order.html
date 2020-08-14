@@ -24,17 +24,17 @@
 </style>
 
 <script type="module">
-    import {NanoPop} from '/lib/nanopop.min.mjs';
+    import {createPopper} from '/lib/nanopop.min.mjs';
 
     const reference = document.querySelector('#reference');
     const popper = document.querySelector('#popper');
     const position = location.hash.slice(1);
-    window.instance = new NanoPop(reference, popper);
+    window.instance = createPopper(reference, popper);
 
     window.instance.update({
         position: 'bottom-middle',
         variantFlipOrder: {
-            ...NanoPop.defaultVariantFlipOrder,
+            ...createPopper.defaultVariantFlipOrder,
             middle: 'sme'
         }
     });

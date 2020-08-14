@@ -24,12 +24,12 @@
 </style>
 
 <script type="module">
-    import {NanoPop} from '/lib/nanopop.min.mjs';
+    import {createPopper} from '/lib/nanopop.min.mjs';
 
     const reference = document.querySelector('#reference');
     const popper = document.querySelector('#popper');
 
-    window.instance = new NanoPop(reference, popper);
+    window.instance = createPopper(reference, popper);
 
     if (window.instance.update() !== 'bs') {
         throw 'Should return the applied position on update';
