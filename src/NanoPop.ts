@@ -152,8 +152,8 @@ export class NanoPop {
         for (const p of positions) {
             const vertical = (p === 't' || p === 'b');
 
-            // The position/variant-value, the related size value of the popper and the limit
-            const mainVal = positionStore[p as keyof AvailablePositions];
+            // The position-value
+            const positionVal = positionStore[p as keyof AvailablePositions];
 
             // Which property has to be changes.
             const [positionKey, variantKey] = (vertical ? ['top', 'left'] : ['left', 'top']) as PositionPairs;
@@ -162,12 +162,12 @@ export class NanoPop {
              * box refers to the size of the popper element. Depending on the orientation this is width or height.
              * The limit is the corresponding, maximum value for this position.
              */
-            const [positionBox, variantBox] = vertical ? [popBox.height, popBox.width] : [popBox.width, popBox.height];
+            const [positionSize, variantSize] = vertical ? [popBox.height, popBox.width] : [popBox.width, popBox.height];
             const [positionMaximum, variantMaximum] = vertical ? [bottom, right] : [right, bottom];
             const [positionMinimum, variantMinimum] = vertical ? [top, left] : [left, top];
 
             // Skip pre-clipped values
-            if (!_force && (mainVal < (positionMinimum) || (mainVal + positionBox) > (positionMaximum))) {
+            if (!_force && (positionVal < positionMinimum || (positionVal + positionSize) > positionMaximum)) {
                 continue;
             }
 
@@ -176,13 +176,13 @@ export class NanoPop {
                 // The position-value, the related size value of the popper and the limit
                 const variantVal = variantStore[((vertical ? 'v' : 'h') + v) as keyof AvailableVariants];
 
-                if (!_force && (variantVal < (variantMinimum) || (variantVal + variantBox) > (variantMaximum))) {
+                if (!_force && (variantVal < variantMinimum || (variantVal + variantSize) > variantMaximum)) {
                     continue;
                 }
 
                 // Apply styles and normalize viewport
                 popper.style[variantKey] = `${variantVal - popBox[variantKey]}px`;
-                popper.style[positionKey] = `${mainVal - popBox[positionKey]}px`;
+                popper.style[positionKey] = `${positionVal - popBox[positionKey]}px`;
                 return p + v;
             }
         }
