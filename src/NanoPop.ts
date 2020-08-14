@@ -48,9 +48,10 @@ type AvailableVariants = {
     he: number;
 };
 
+type PositionMatch = 'ts' | 'tm' | 'te' | 'bs' | 'bm' | 'be' | 'ls' | 'lm' | 'le' | 'rs' | 'rm' | 're';
 
 type NanoPop = {
-    update(updatedOptions?: Partial<NanoPopOptions>): string | null; // TODO: types instead of 'string'?
+    update(updatedOptions?: Partial<NanoPopOptions>): PositionMatch | null;
 };
 
 interface NanoPopConstructor {
@@ -67,7 +68,6 @@ interface NanoPopConstructor {
      */
     (options?: Partial<NanoPopOptions>): NanoPop;
 }
-
 
 // Export current version
 export const version = VERSION;
@@ -102,7 +102,7 @@ export const createPopper: NanoPopConstructor = (
     }
 
     return {
-        update(options: Partial<NanoPopOptions> = baseOptions, _force?: boolean): string | null {
+        update(options: Partial<NanoPopOptions> = baseOptions, _force?: boolean): PositionMatch | null {
             const {
                 container,
                 reference,
@@ -194,7 +194,7 @@ export const createPopper: NanoPopConstructor = (
                     // Apply styles and normalize viewport
                     popper.style[variantKey] = `${variantVal - popBox[variantKey]}px`;
                     popper.style[positionKey] = `${positionVal - popBox[positionKey]}px`;
-                    return p + v;
+                    return (p + v) as PositionMatch;
                 }
             }
 
