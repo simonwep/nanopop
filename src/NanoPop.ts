@@ -20,7 +20,6 @@ export type NanoPopPositionCombination =
     'bottom-start' | 'bottom-middle' | 'bottom-end' | NanoPopPosition;
 
 export type NanoPopOptions = {
-    forceApplyOnFailure: boolean;
     container: DOMRect;
     position: NanoPopPositionCombination;
     variantFlipOrder: VariantFlipOrder;
@@ -75,8 +74,7 @@ export const version = VERSION;
 export const defaults = {
     variantFlipOrder: {start: 'sme', middle: 'mse', end: 'ems'},
     positionFlipOrder: {top: 'tbrl', right: 'rltb', bottom: 'btrl', left: 'lrbt'},
-    forceApplyOnFailure: false,
-    position: 'bottom-start',
+    position: 'bottom-start', // TODO: Change to just bottom
     margin: 8
 };
 
@@ -85,19 +83,16 @@ export const defaults = {
  * @param reference Reference element
  * @param popper Popper element
  * @param opt Optional, additional options
- * @param force Apply position forcefully
  */
 export const reposition = (
     reference: HTMLElement,
     popper: HTMLElement,
-    opt?: Partial<NanoPopOptions>,
-    force?: boolean
+    opt?: Partial<NanoPopOptions>
 ): PositionMatch | null => {
     const {
         container,
         margin,
         position,
-        forceApplyOnFailure,
         variantFlipOrder,
         positionFlipOrder
     } = {
@@ -166,7 +161,7 @@ export const reposition = (
         const [positionMinimum, variantMinimum] = vertical ? [top, left] : [left, top];
 
         // Skip pre-clipped values
-        if (!force && (positionVal < positionMinimum || (positionVal + positionSize) > positionMaximum)) {
+        if (positionVal < positionMinimum || (positionVal + positionSize) > positionMaximum) {
             continue;
         }
 
@@ -175,7 +170,7 @@ export const reposition = (
             // The position-value, the related size value of the popper and the limit
             const variantVal = variantStore[((vertical ? 'v' : 'h') + v) as keyof AvailableVariants];
 
-            if (!force && (variantVal < variantMinimum || (variantVal + variantSize) > variantMaximum)) {
+            if (variantVal < variantMinimum || (variantVal + variantSize) > variantMaximum) {
                 continue;
             }
 
@@ -184,10 +179,6 @@ export const reposition = (
             popper.style[positionKey] = `${positionVal - popBox[positionKey]}px`;
             return (p + v) as PositionMatch;
         }
-    }
-
-    if (forceApplyOnFailure) {
-        return reposition(reference, popper, opt, true);
     }
 
     return null;
