@@ -19,9 +19,7 @@ export type NanoPopPositionCombination =
     'right-start' | 'right-middle' | 'right-end' |
     'bottom-start' | 'bottom-middle' | 'bottom-end' | NanoPopPosition;
 
-type PositionPairs = [NanoPopPosition, NanoPopPosition];
-
-type NanoPopOptions = {
+export type NanoPopOptions = {
     forceApplyOnFailure: boolean;
     container: DOMRect;
     position: NanoPopPositionCombination;
@@ -48,11 +46,12 @@ type AvailableVariants = {
     he: number;
 };
 
+type PositionPairs = [NanoPopPosition, NanoPopPosition];
 type PositionMatch = 'ts' | 'tm' | 'te' | 'bs' | 'bm' | 'be' | 'ls' | 'lm' | 'le' | 'rs' | 'rm' | 're';
 
-type NanoPop = {
+interface NanoPop {
     update(updatedOptions?: Partial<NanoPopOptions>): PositionMatch | null;
-};
+}
 
 interface NanoPopConstructor {
 
@@ -81,10 +80,17 @@ export const defaults = {
     margin: 8
 };
 
+/**
+ * Repositions an element once using the provided options and elements.
+ * @param reference Reference element
+ * @param popper Popper element
+ * @param opt Optional, additional options
+ * @param force Apply position forcefully
+ */
 export const reposition = (
     reference: HTMLElement,
     popper: HTMLElement,
-    opt: Partial<NanoPopOptions>,
+    opt?: Partial<NanoPopOptions>,
     force?: boolean
 ): PositionMatch | null => {
     const {
@@ -187,11 +193,22 @@ export const reposition = (
     return null;
 };
 
+/**
+ * Creates a stateful popper.
+ * You can either...
+ * ... pass an options object: createPopper(<options>)
+ * ... pass both the reference and popper: create(<ref>, <el>, <?options>)
+ * ... pass nothing, in this case you'll have to set at least both a reference and a popper in update.
+ *
+ * @param reference | options Reference element or options
+ * @param popper Popper element
+ * @param options Optional additional options
+ */
 export const createPopper: NanoPopConstructor = (
     reference?: HTMLElement | Partial<NanoPopOptions>,
     popper?: HTMLElement,
     options?: Partial<NanoPopOptions>
-) => {
+): NanoPop => {
     let baseOptions: Partial<NanoPopOptions> = {};
 
     // Normalize arguments
@@ -202,6 +219,11 @@ export const createPopper: NanoPopConstructor = (
     }
 
     return {
+
+        /**
+         * Repositions the current popper.
+         * @param options Optional options which get merged with the current ones.
+         */
         update(options: Partial<NanoPopOptions> = baseOptions): PositionMatch | null {
             const {reference, popper} = Object.assign(baseOptions, options);
 
