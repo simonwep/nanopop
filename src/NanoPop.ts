@@ -74,7 +74,7 @@ export const version = VERSION;
 export const defaults = {
     variantFlipOrder: {start: 'sme', middle: 'mse', end: 'ems'},
     positionFlipOrder: {top: 'tbrl', right: 'rltb', bottom: 'btrl', left: 'lrbt'},
-    position: 'bottom-start', // TODO: Change to just bottom
+    position: 'bottom',
     margin: 8
 };
 
@@ -126,12 +126,12 @@ export const reposition = (
      * The values depend on horizontal / vertical orientation
      */
     const variantStore: AvailableVariants = {
-        vm: (-popBox.width / 2) + (refBox.left + refBox.width / 2),
         vs: refBox.left,
+        vm: refBox.left + refBox.width / 2 + -popBox.width / 2,
         ve: refBox.left + refBox.width - popBox.width,
-        hs: refBox.bottom - refBox.height,
-        he: refBox.bottom - popBox.height,
-        hm: refBox.bottom - refBox.height / 2 - popBox.height / 2
+        hs: refBox.top,
+        hm: refBox.bottom - refBox.height / 2 - popBox.height / 2,
+        he: refBox.bottom - popBox.height
     };
 
     // Extract position and variant
@@ -200,14 +200,10 @@ export const createPopper: NanoPopConstructor = (
     popper?: HTMLElement,
     options?: Partial<NanoPopOptions>
 ): NanoPop => {
-    let baseOptions: Partial<NanoPopOptions> = {};
 
-    // Normalize arguments
-    if (typeof reference === 'object' && !(reference instanceof HTMLElement)) {
-        baseOptions = reference;
-    } else {
-        baseOptions = {reference, popper, ...options};
-    }
+    // Resolve options
+    const baseOptions: Partial<NanoPopOptions> = typeof reference === 'object' && !(reference instanceof HTMLElement) ?
+        reference : {reference, popper, ...options};
 
     return {
 
@@ -219,7 +215,7 @@ export const createPopper: NanoPopConstructor = (
             const {reference, popper} = Object.assign(baseOptions, options);
 
             if (!popper || !reference) {
-                throw new Error('[NanoPop] Popper or reference element missing.');
+                throw new Error('Popper- or reference-element missing.');
             }
 
             return reposition(reference, popper, baseOptions);
