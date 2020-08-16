@@ -46,13 +46,13 @@ type AvailableVariants = {
 };
 
 type PositionPairs = [NanoPopPosition, NanoPopPosition];
-type PositionMatch = 'ts' | 'tm' | 'te' | 'bs' | 'bm' | 'be' | 'ls' | 'lm' | 'le' | 'rs' | 'rm' | 're';
+export type PositionMatch = 'ts' | 'tm' | 'te' | 'bs' | 'bm' | 'be' | 'ls' | 'lm' | 'le' | 'rs' | 'rm' | 're';
 
-interface NanoPop {
+export interface NanoPop {
     update(updatedOptions?: Partial<NanoPopOptions>): PositionMatch | null;
 }
 
-interface NanoPopConstructor {
+export interface NanoPopConstructor {
 
     /**
      * @param reference Reference element
