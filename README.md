@@ -28,13 +28,14 @@
 
 <br>
 
-NanoPop is an ultra-tiny positioning engine. But **wait**, isn't there [PopperJS](https://github.com/popperjs/popper-core)? Yeah - and PopperJS is great! But there are tons of features that, in most cases, you just might not need. This library is only around ~ 700 Bytes brotlied (PopperJS is around 3kB).
+NanoPop is an ultra-tiny positioning engine. Hold up, isn't there [PopperJS](https://github.com/popperjs/popper-core)?
+Yeah - and PopperJS is great! But there are tons of features that, in most cases, you just might not need. This library is less than a third of PopperJS.
 
 #### When should I use Nanopop and not PopperJS?
 1. Situations where you want **full control** over positioning, including handling events such as scrolling, and manual resizing.
 2. **Performance-critical** cases with lots of elements [...] nanopop will only makes changes if you say so.
 3. Poppers with **minimal footprint** such as drop-downs and tooltips which don't require that much configurability.
-4. You might have some special needs about how your popper behaves. NanoPop could be used as super-class and you can, based on what's required, extend NanoPop as you will :)
+4. You might have some special needs about how your popper behaves. NanoPop exposes a function for the sole purpose of positioning something, use it in your own library!
 
 This library was originally part of [pickr](https://github.com/Simonwep/pickr) - now ported to TS with tests and a few updates / bug-fixes.
 
@@ -52,25 +53,30 @@ $ yarn add nanopop
 
 Include directly via jsdelivr:
 ```html
-<script src="https://cdn.jsdelivr.net/npm/nanopop@1.3.0/lib/nanopop.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/nanopop@2.0.0/lib/nanopop.min.js"></script>
 ```
 
 Using [JavaScript Modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules):
 
 ````js
-import {NanoPop} from 'https://cdn.jsdelivr.net/npm/nanopop/lib/nanopop.min.mjs'
+import {
+    reposition,   // Core, stateless function to reposition an element
+    createPopper, // Stateful function which keeps track of your configuration
+    defaults,     // A subset of nanopops options used as default values
+    version       // Current version
+} from 'https://cdn.jsdelivr.net/npm/nanopop/lib/nanopop.min.mjs'
 ````
 
+> 🌟 NanoPop is fully tree-shakable! E.g. if you only use `reposition` you'll probably end up with less than 500B code!
 
 ## Usage
 
 ```js
-const reference = document.querySelector('.btn');
-const popper = document.querySelector('.dropdown');
-const nanopop = new NanoPop(reference, popper);
-
-// Updating the popper-position
-nanopop.update();
+reposition(
+    /* reference: */ document.querySelector('.btn'),
+    /* popper: */ document.querySelector('.dropdown'),
+    /* We're using the default options */
+);
 ```
 
 > ⚠ The popper-element must have set `position` to `fixed`.
@@ -78,23 +84,22 @@ nanopop.update();
 > ℹ Because the default-`container` is `document.documentElement` you might have to increase the `height` of the `html` element to make room for your popper (e.g. `html {height: 100vh;}`)
 
 #### All options
-```js
-const nanopop = new NanoPop(reference, popper, {
+```ts
+import {reposition, createPopper} from 'nanopop';
 
-    // The DOMRect of the container, this is the default:
+// Using a object and reposition directly
+const nanopop = reposition(reference, popper, {
+
+    // The DOMRect of the container, it used the html-element as default.
+    // You could also create your own boundary using a custon DOMRect (https://developer.mozilla.org/en-US/docs/Web/API/DOMRect)!
     container: document.documentElement.getBoundingClientRect(),
 
     // Margin between the popper element and the reference
     margin: 8,
 
     // Preferred position, any combination of [top|right|bottom|left]-[start|middle|end] is valid.
-    position: 'bottom-start',
-
-    // Sometimes there's no way to position the popper element without clipping it.
-    // Turn this on if you, in case there's no non-clipping position, want to apply the wanted position forcefully.
-    // The .update() function will return false in any case it fails so you can handle this separately.
-    // Attention: If this is set to false and you do not take care about handling the clipped element yourself it'll be positioned on the top-left corner of the container-element (most of the time this is the document element itself).
-    forceApplyOnFailure: false,
+    // 'middle' is used as default-variant if you leave it out.
+    position: 'bottom-middle',
 
     // In case the variant-part (start, middle or end) cannot be applied you can specify what (and if)
     // should be tried next.
@@ -112,23 +117,23 @@ const nanopop = new NanoPop(reference, popper, {
         left: 'lrbt'
     }
 });
+
+/**
+ * Using the createPopper function to create a stateful wrapper
+ *
+ * Correct ways of calling it are:
+ * createPopper(reference: HTMLElement, popper: HTMLElement, options?: NanoPopOptions)
+ * createPopper(options?: NanoPopOptions)
+ * ⚠ If you omit options entierly you'll have to set both the reference and the popper later when calling .update!
+ */
+const popper = createPopper({...});
+popper.update(); // You can pass an object to update which will get merged with the existing config.
 ```
 
-### Functions
-* `nanopop.update(newOptions?: Partial<Options>)` _- Update the position and optionally update the options of this NanoPop instance.
-It'll return a position-pair (For example `te` for **T**op-**E**nd) or `null` based on if it was possible to find a position for the popper without clipping it._
+Calling `popper.update(...)` or `reposition(...)` both returns a position-pair (For example `te` for **T**op-**E**nd) or `null` based on if it was possible to find a position for the popper without clipping it._
 
 > Tip: The returned position-pair is perfect for tool-tips to give them a little arrow!
 
-### Properties
-* `nanopop.version` _- Current version._
-
-These are static default-values used in case you're not specifying something else:
-* `NanoPop.defaultVariantFlipOrder` _- Default `variantFlipOrder` values._
-* `NanoPop.defaultPositionFlipOrder` _- Default `positionFlipOrder`._
-
 ### Caveats
 1. The popper-element must have `position` set to `fixed`.
-2. ~~`window` is (currently) the only bounding-element supported.~~
-3. The library does not perform any automatic updates if the window gets resized, or the user scrolls, so you have to take care of that yourself and call `update()` in the case.
-4. You might have to fiddle around with `z-index` to make it work inside of complex, nested, scrollable containers.
+2. If there is no position available the popper-element will move to `(0|0)` on the page, you'll have to handle this edge-case manually (for example hiding it as at this point it's not fully visible anymore).
