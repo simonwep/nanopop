@@ -1,3 +1,5 @@
+type Direction = 'top' | 'left' | 'bottom' | 'right';
+
 export type VariantFlipOrder = {
     start: string;
     middle: string;
@@ -11,17 +13,15 @@ export type PositionFlipOrder = {
     left: string;
 };
 
-export type NanoPopPosition = 'top' | 'left' | 'bottom' | 'right';
-
-export type NanoPopPositionCombination =
+export type NanoPopPosition =
     'top-start' | 'top-middle' | 'top-end' |
     'left-start' | 'left-middle' | 'left-end' |
     'right-start' | 'right-middle' | 'right-end' |
-    'bottom-start' | 'bottom-middle' | 'bottom-end' | NanoPopPosition;
+    'bottom-start' | 'bottom-middle' | 'bottom-end' | Direction;
 
 export type NanoPopOptions = {
     container: DOMRect;
-    position: NanoPopPositionCombination;
+    position: NanoPopPosition;
     variantFlipOrder: VariantFlipOrder;
     positionFlipOrder: PositionFlipOrder;
     margin: number;
@@ -45,7 +45,7 @@ type AvailableVariants = {
     he: number;
 };
 
-type PositionPairs = [NanoPopPosition, NanoPopPosition];
+type PositionPairs = [Direction, Direction];
 export type PositionMatch = 'ts' | 'tm' | 'te' | 'bs' | 'bm' | 'be' | 'ls' | 'lm' | 'le' | 'rs' | 'rm' | 're';
 
 export interface NanoPop {
