@@ -39,6 +39,8 @@ Yeah - and PopperJS is great! But there are tons of features that, in most cases
 
 This library was originally part of [pickr](https://github.com/Simonwep/pickr) - now ported to TS with tests and a few updates / bug-fixes.
 
+> Heads up! This is the readme for v2 - if you're looking for the first version head over [here](https://github.com/Simonwep/nanopop/tree/539de9558a113ca6548a0d7d316ae8c65d7817d5) (v1 is not maintained anymore). 
+
 ## Getting Started
 
 Install via npm:
@@ -134,6 +136,6 @@ Calling `popper.update(...)` or `reposition(...)` both returns a position-pair (
 
 > Tip: The returned position-pair is perfect for tool-tips to give them a little arrow!
 
-### Caveats
+## Caveats
 1. The popper-element must have `position` set to `fixed`.
 2. If there is no position available the popper-element will move to `(0|0)` on the page, you'll have to handle this edge-case manually (for example hiding it as at this point it's not fully visible anymore).
