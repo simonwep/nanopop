@@ -1,9 +1,9 @@
-import {NanoPop} from 'https://cdn.jsdelivr.net/npm/nanopop/lib/nanopop.min.mjs';
+import {createPopper} from 'https://cdn.jsdelivr.net/npm/nanopop@2.0.0/lib/nanopop.min.mjs';
 
 const reference = document.querySelector('.reference');
 const popper = document.querySelector('.popper');
 
-const nanoPop = new NanoPop(reference, popper);
+const nanoPop = createPopper(reference, popper);
 
 const posControls = Array.from(document.querySelectorAll('.controls .pos > button'));
 const varControls = Array.from(document.querySelectorAll('.controls .var > button'));
