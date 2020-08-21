@@ -1,0 +1,38 @@
+<div id="container">
+    <div id="reference"></div>
+    <div id="popper"></div>
+</div>
+
+<style>
+    @import './reset.css';
+
+    #container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #reference {
+        width: 40px;
+        height: 40px;
+    }
+
+    #popper {
+        width: 700px;
+        height: 700px;
+    }
+</style>
+
+<script type="module">
+    import {reposition} from '/lib/nanopop.min.mjs';
+
+    const reference = document.querySelector('#reference');
+    const popper = document.querySelector('#popper');
+
+    Object.assign(popper.style, {
+        left: '5px',
+        top: '10px'
+    });
+
+    reposition(reference, popper);
+</script>

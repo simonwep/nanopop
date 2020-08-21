@@ -105,6 +105,7 @@ export const reposition = (
      * Reset position to resolve viewport
      * See https://developer.mozilla.org/en-US/docs/Web/CSS/position#fixed
      */
+    const {left: originalLeft, top: originalTop} = popper.style;
     popper.style.left = '0';
     popper.style.top = '0';
 
@@ -180,6 +181,11 @@ export const reposition = (
             return (p + v) as PositionMatch;
         }
     }
+
+    // Revert style values (won't work with styled-elements or similar systems)
+    // "Fix" for https://github.com/Simonwep/nanopop/issues/7
+    popper.style.left = originalLeft;
+    popper.style.top = originalTop;
 
     return null;
 };

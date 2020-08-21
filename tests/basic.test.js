@@ -22,6 +22,11 @@ describe('All positions and default values', () => {
         expect(await page.screenshot()).toMatchImageSnapshot();
     });
 
+    it('Should do nothing if there is no way of positioning it without clipping', async () => {
+        await loadVisualTest('failing.html');
+        expect(await page.screenshot()).toMatchImageSnapshot();
+    });
+
     // Test all possible combinations
     const positions = ['top', 'bottom', 'left', 'right'];
     const variants = ['start', 'middle', 'end'];
