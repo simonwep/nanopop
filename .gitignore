@@ -11,3 +11,6 @@ lib
 
 # Test-diff files
 *-diff.png
+/test-results/
+/playwright-report/
+/playwright/.cache/

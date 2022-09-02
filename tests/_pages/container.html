@@ -1,0 +1,59 @@
+<div id="container">
+    <div id="reference"></div>
+    <div id="popper"></div>
+</div>
+
+<style>
+    @import '_reset.css';
+
+    #container {
+        position: absolute;
+        background: #ea5050;
+        width: 200px;
+        height: 200px;
+        top: 20px;
+        left: 50px;
+    }
+
+    #reference {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+    }
+
+    #popper {
+        width: 50px;
+        height: 50px;
+    }
+</style>
+
+<script type="module">
+    import {createPopper} from '/lib/nanopop.min.mjs';
+
+    const container = document.querySelector('#container');
+    const reference = document.querySelector('#reference');
+    const popper = document.querySelector('#popper');
+    const position = location.hash.slice(1);
+
+    window.instance = createPopper(reference, popper, {
+        container: container.getBoundingClientRect()
+    });
+
+    switch (position) {
+        case 'right': {
+            reference.style.right = '0';
+            break;
+        }
+        case 'bottom': {
+            reference.style.right = '0';
+            reference.style.bottom = '0';
+            break;
+        }
+        case 'left': {
+            reference.style.bottom = '0';
+            break;
+        }
+    }
+
+    window.instance.update({position});
+</script>

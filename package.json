@@ -20,9 +20,10 @@
     "scripts": {
         "build": "rollup -c rollup.config.prod.js",
         "dev": "concurrently \"rollup -c rollup.config.dev.js --watch\" \"serve .\"",
-        "lint": "eslint ./src/**/*.ts ./tests/**/*.js",
-        "lint:fix": "eslint ./src/**/*.ts ./tests/**/*.js --fix",
-        "test": "jest",
+        "serve": "serve . -p 3000",
+        "lint": "eslint './{src,tests}/**/*.ts'",
+        "lint:fix": "npm run lint -- --fix",
+        "test": "playwright test",
         "test:ci": "npm run lint:fix && npm run build && npm test"
     },
     "homepage": "https://github.com/Simonwep/nanopop#readme",
@@ -32,6 +33,7 @@
         "url": "https://github.com/Simonwep/nanopop.git"
     },
     "devDependencies": {
+        "@playwright/test": "^1.25.1",
         "@rollup/plugin-replace": "^4.0.0",
         "@types/ws": "^8.5.3",
         "@typescript-eslint/eslint-plugin": "^5.36.1",

@@ -1,0 +1,35 @@
+<div id="container">
+    <div id="reference"></div>
+    <div id="popper"></div>
+</div>
+
+<style>
+    @import '_reset.css';
+
+    #container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #reference {
+        width: 40px;
+        height: 40px;
+    }
+
+    #popper {
+        width: 10px;
+        height: 10px;
+    }
+</style>
+
+<script type="module">
+    import {reposition} from '/lib/nanopop.min.mjs';
+
+    const reference = document.querySelector('#reference');
+    const popper = document.querySelector('#popper');
+
+    if (reposition(reference, popper) !== 'bm') {
+        throw 'Should return the applied position on update';
+    }
+</script>
