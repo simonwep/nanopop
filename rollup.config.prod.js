@@ -1,7 +1,7 @@
 import {terser} from 'rollup-plugin-terser';
-import ts       from '@wessberg/rollup-plugin-ts';
-import replace  from '@rollup/plugin-replace';
-import pkg      from './package.json';
+import ts from 'rollup-plugin-ts';
+import replace from '@rollup/plugin-replace';
+import pkg from './package.json';
 
 const banner = `/*! NanoPop ${pkg.version} MIT | https://github.com/Simonwep/nanopop */`;
 
@@ -18,7 +18,8 @@ export default {
             }
         }),
         replace({
-            VERSION: JSON.stringify(pkg.version)
+            VERSION: JSON.stringify(pkg.version),
+            preventAssignment: true
         })
     ],
     output: [

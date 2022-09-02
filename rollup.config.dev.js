@@ -1,6 +1,6 @@
 import replace from '@rollup/plugin-replace';
-import ts      from '@wessberg/rollup-plugin-ts';
-import pkg     from './package.json';
+import ts from 'rollup-plugin-ts';
+import pkg from './package.json';
 
 export default {
     input: 'src/NanoPop.ts',
@@ -9,7 +9,8 @@ export default {
             transpileOnly: true
         }),
         replace({
-            VERSION: JSON.stringify(pkg.version)
+            VERSION: JSON.stringify(pkg.version),
+            preventAssignment: true
         })
     ],
     output: [
