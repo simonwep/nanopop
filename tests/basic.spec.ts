@@ -18,8 +18,12 @@ test.describe('All positions and default values', () => {
         await testPage(page, 'basic-large-popper.html');
     });
 
-    test('Should work with large poppers v2', async ({page}) => {
+    test('Should work with large poppers 2', async ({page}) => {
         await testPage(page, 'basic-large-popper-2.html');
+    });
+
+    test('Should work with padding', async ({page}) => {
+        await testPage(page, 'basic-padding.html');
     });
 
     test('Should do nothing if there is no way of positioning it without clipping', async ({page}) => {

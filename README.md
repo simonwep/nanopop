@@ -99,6 +99,9 @@ const nanopop = reposition(reference, popper, {
     // Margin between the popper element and the reference
     margin: 8,
 
+    // Minimum space between the popper and the container
+    padding: 0,
+
     // Preferred position, any combination of [top|right|bottom|left]-[start|middle|end] is valid.
     // 'middle' is used as default-variant if you leave it out.
     position: 'bottom-middle',

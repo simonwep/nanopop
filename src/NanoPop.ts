@@ -1,4 +1,5 @@
 type Direction = 'top' | 'left' | 'bottom' | 'right';
+type Alignment = 'start' | 'middle' | 'end';
 
 export type VariantFlipOrder = {
     start: string;
@@ -13,11 +14,7 @@ export type PositionFlipOrder = {
     left: string;
 };
 
-export type NanoPopPosition =
-    'top-start' | 'top-middle' | 'top-end' |
-    'left-start' | 'left-middle' | 'left-end' |
-    'right-start' | 'right-middle' | 'right-end' |
-    'bottom-start' | 'bottom-middle' | 'bottom-end' | Direction;
+export type NanoPopPosition = `${Direction}-${Alignment}` | Direction;
 
 export type NanoPopOptions = {
     container: DOMRect;
@@ -27,6 +24,7 @@ export type NanoPopOptions = {
     margin: number;
     reference?: HTMLElement;
     popper?: HTMLElement;
+    padding?: number;
 };
 
 type AvailablePositions = {
@@ -46,6 +44,7 @@ type AvailableVariants = {
 };
 
 type PositionPairs = [Direction, Direction];
+
 export type PositionMatch = 'ts' | 'tm' | 'te' | 'bs' | 'bm' | 'be' | 'ls' | 'lm' | 'le' | 'rs' | 'rm' | 're';
 
 export interface NanoPop {
@@ -75,7 +74,8 @@ export const defaults = {
     variantFlipOrder: {start: 'sme', middle: 'mse', end: 'ems'},
     positionFlipOrder: {top: 'tbrl', right: 'rltb', bottom: 'btrl', left: 'lrbt'},
     position: 'bottom',
-    margin: 8
+    margin: 8,
+    padding: 0
 };
 
 /**
@@ -92,6 +92,7 @@ export const reposition = (
     const {
         container,
         margin,
+        padding,
         position,
         variantFlipOrder,
         positionFlipOrder
@@ -158,11 +159,12 @@ export const reposition = (
          * The limit is the corresponding, maximum value for this position.
          */
         const [positionSize, variantSize] = vertical ? [popBox.height, popBox.width] : [popBox.width, popBox.height];
+
         const [positionMaximum, variantMaximum] = vertical ? [bottom, right] : [right, bottom];
         const [positionMinimum, variantMinimum] = vertical ? [top, left] : [left, top];
 
         // Skip pre-clipped values
-        if (positionVal < positionMinimum || (positionVal + positionSize) > positionMaximum) {
+        if (positionVal < positionMinimum || (positionVal + positionSize + padding) > positionMaximum) {
             continue;
         }
 
@@ -171,7 +173,7 @@ export const reposition = (
             // The position-value, the related size value of the popper and the limit
             const variantVal = variantStore[((vertical ? 'v' : 'h') + v) as keyof AvailableVariants];
 
-            if (variantVal < variantMinimum || (variantVal + variantSize) > variantMaximum) {
+            if (variantVal < variantMinimum || (variantVal + variantSize + padding) > variantMaximum) {
                 continue;
             }
 
