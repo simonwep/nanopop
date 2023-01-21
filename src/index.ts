@@ -24,6 +24,7 @@ export type NanoPopOptions = {
     margin: number;
     reference?: HTMLElement;
     popper?: HTMLElement;
+    arrow?: HTMLElement;
     padding?: number;
 };
 
@@ -91,6 +92,7 @@ export const reposition = (
 ): PositionMatch | null => {
     const {
         container,
+        arrow,
         margin,
         padding,
         position,
@@ -129,7 +131,7 @@ export const reposition = (
      */
     const variantStore: AvailableVariants = {
         vs: refBox.left,
-        vm: refBox.left + refBox.width / 2 + -popBox.width / 2,
+        vm: refBox.left + refBox.width / 2 - popBox.width / 2,
         ve: refBox.left + refBox.width - popBox.width,
         hs: refBox.top,
         hm: refBox.bottom - refBox.height / 2 - popBox.height / 2,
@@ -149,7 +151,7 @@ export const reposition = (
         const vertical = (p === 't' || p === 'b');
 
         // The position-value
-        const positionVal = positionStore[p as keyof AvailablePositions];
+        let positionVal = positionStore[p as keyof AvailablePositions];
 
         // Which property has to be changes.
         const [positionKey, variantKey] = (vertical ? ['top', 'left'] : ['left', 'top']) as PositionPairs;
@@ -171,15 +173,38 @@ export const reposition = (
         for (const v of variants) {
 
             // The position-value, the related size value of the popper and the limit
-            const variantVal = variantStore[((vertical ? 'v' : 'h') + v) as keyof AvailableVariants];
+            let variantVal = variantStore[((vertical ? 'v' : 'h') + v) as keyof AvailableVariants];
 
             if (variantVal < variantMinimum || (variantVal + variantSize + padding) > variantMaximum) {
                 continue;
             }
 
+            // Substract popBox's initial position
+            variantVal -= popBox[variantKey];
+            positionVal -= popBox[positionKey];
+
             // Apply styles and normalize viewport
-            popper.style[variantKey] = `${variantVal - popBox[variantKey]}px`;
-            popper.style[positionKey] = `${positionVal - popBox[positionKey]}px`;
+            popper.style[variantKey] = `${variantVal}px`;
+            popper.style[positionKey] = `${positionVal}px`;
+
+            if (arrow) {
+                // Calculate refBox's center offset from its variant position for arrow positioning
+                const refBoxCenterOffset = vertical ? refBox.width / 2 : refBox.height / 2;
+
+                // When refBox is larger than popBox, have the arrow's variant position be the center of popBox instead.
+                const arrowVariantVal = refBoxCenterOffset * 2 < variantSize ?
+                    refBox[variantKey] + refBoxCenterOffset : variantVal + variantSize / 2;
+
+                // Arrow position is either on one side of the popBox or the other.
+                if (positionVal < refBox[positionKey]) {
+                    positionVal += positionSize;
+                }
+
+                // Apply styles to arrow
+                arrow.style[variantKey] = `${arrowVariantVal}px`;
+                arrow.style[positionKey] = `${positionVal}px`;
+            }
+
             return (p + v) as PositionMatch;
         }
     }
