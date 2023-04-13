@@ -1,0 +1,46 @@
+<div id="container">
+    <div id="reference"></div>
+    <div id="popper"></div>
+    <div id="arrow"></div>
+</div>
+
+<style>
+    @import '_reset.css';
+
+    #container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #reference {
+        width: 100px;
+        height: 100px;
+    }
+
+    #popper {
+        width: 40px;
+        height: 40px;
+    }
+
+    #arrow{
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background: black;
+        transform: translate(-50%, -50%) rotate(45deg);
+    }
+</style>
+
+<script type="module">
+    import {reposition} from '/dist/nanopop.mjs';
+
+    const reference = document.querySelector('#reference');
+    const popper = document.querySelector('#popper');
+    const arrow = document.querySelector('#arrow');
+
+    reposition(reference, popper, {
+        position: location.hash.slice(1),
+        arrow: arrow
+    });
+</script>

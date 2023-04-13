@@ -1,6 +1,5 @@
 import {test} from '@playwright/test';
-
-const {testPage} = require('./utils');
+import {positions, variants, testPage} from './utils';
 
 test.beforeEach( ({}, testInfo) => testInfo.snapshotSuffix = '');
 
@@ -31,9 +30,6 @@ test.describe('All positions and default values', () => {
     });
 
     // Test all possible combinations
-    const positions = ['top', 'bottom', 'left', 'right'];
-    const variants = ['start', 'middle', 'end'];
-
     for (const position of positions) {
         for (const variant of variants) {
             const pos = `${position}-${variant}`;
