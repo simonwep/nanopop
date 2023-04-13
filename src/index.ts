@@ -179,7 +179,7 @@ export const reposition = (
                 continue;
             }
 
-            // Substract popBox's initial position
+            // Subtract popBox's initial position
             variantVal -= popBox[variantKey];
             positionVal -= popBox[positionKey];
 
