@@ -1,14 +1,18 @@
 {
+    "include": ["src", "tests"],
     "compilerOptions": {
-        "declaration": true,
-        "declarationDir": "lib",
+        "target": "ES2020",
+        "useDefineForClassFields": true,
+        "module": "ESNext",
+        "lib": ["DOM", "ESNext"],
+        "skipLibCheck": true,
+        "moduleResolution": "Node",
         "resolveJsonModule": true,
-        "moduleResolution": "node",
-        "esModuleInterop": true,
-        "noImplicitAny": true,
-        "sourceMap": true,
-        "target": "ES2019",
+        "isolatedModules": true,
+        "noEmit": true,
         "strict": true,
-        "lib": ["dom", "es7"]
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true
     }
 }

@@ -7,7 +7,7 @@ node_modules/
 .idea
 .psd
 .test
-lib
+dist
 
 # Test-diff files
 *-diff.png

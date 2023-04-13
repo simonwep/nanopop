@@ -7,8 +7,8 @@
 </h3>
 
 <p align="center">
-  <img alt="gzip size" src="https://img.badgesize.io/https://cdn.jsdelivr.net/npm/nanopop/lib/nanopop.min.mjs?compression=gzip&style=flat-square">
-  <img alt="brotli size" src="https://img.badgesize.io/https://cdn.jsdelivr.net/npm/nanopop/lib/nanopop.min.mjs?compression=brotli&style=flat-square">
+  <img alt="gzip size" src="https://img.badgesize.io/https://cdn.jsdelivr.net/npm/nanopop/dist/nanopop.mjs?compression=gzip&style=flat-square">
+  <img alt="brotli size" src="https://img.badgesize.io/https://cdn.jsdelivr.net/npm/nanopop/dist/nanopop.mjs?compression=brotli&style=flat-square">
   <a href="https://github.com/Simonwep/nanopop/actions"><img
      alt="Build Status"
      src="https://img.shields.io/github/workflow/status/Simonwep/nanopop/CI?style=flat-square"/></a>
@@ -28,14 +28,14 @@
 
 <br>
 
-NanoPop is an ultra-tiny positioning engine. Hold up, isn't there [PopperJS](https://github.com/popperjs/popper-core)?
+Index is an ultra-tiny positioning engine. Hold up, isn't there [PopperJS](https://github.com/popperjs/popper-core)?
 Yeah - and PopperJS is great! But there are tons of features that, in most cases, you just might not need. This library is less than a third of PopperJS.
 
 #### When should I use Nanopop and not PopperJS?
 1. Situations where you want **full control** over positioning, including handling events such as scrolling, and manual resizing.
 2. **Performance-critical** cases with lots of elements [...] nanopop will only makes changes if you say so.
 3. Poppers with **minimal footprint** such as drop-downs and tooltips which don't require that much configurability.
-4. You might have some special needs about how your popper behaves. NanoPop exposes a function for the sole purpose of positioning something, use it in your own library!
+4. You might have some special needs about how your popper behaves. Index exposes a function for the sole purpose of positioning something, use it in your own library!
 
 This library was originally part of [pickr](https://github.com/Simonwep/pickr) - now ported to TS with tests and a few updates / bug-fixes.
 
@@ -55,7 +55,7 @@ $ yarn add nanopop
 
 Include directly via jsdelivr:
 ```html
-<script src="https://cdn.jsdelivr.net/npm/nanopop@2.0.0/lib/nanopop.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/nanopop/dist/nanopop.umd.js"></script>
 ```
 
 Using [JavaScript Modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules):
@@ -69,7 +69,7 @@ import {
 } from 'https://cdn.jsdelivr.net/npm/nanopop/lib/nanopop.min.mjs'
 ````
 
-> 🌟 NanoPop is fully tree-shakable! E.g. if you only use `reposition` you'll probably end up with less than 500B code!
+> 🌟 Index is fully tree-shakable! E.g. if you only use `reposition` you'll probably end up with less than 500B code!
 
 ## Usage
 
