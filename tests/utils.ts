@@ -1,5 +1,9 @@
 import {expect, Page} from '@playwright/test';
 
+export const positions = ['top', 'bottom', 'left', 'right'];
+
+export const variants =  ['start', 'middle', 'end'];
+
 export const testPage = async (page: Page, name: string) => {
 
     // Load page

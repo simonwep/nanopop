@@ -96,6 +96,10 @@ const nanopop = reposition(reference, popper, {
     // You could also create your own boundary using a custon DOMRect (https://developer.mozilla.org/en-US/docs/Web/API/DOMRect)!
     container: document.documentElement.getBoundingClientRect(),
 
+    // Optional arrow element that is position in the center between the popper
+    // and the reference element.
+    arrow: undefined,
+
     // Margin between the popper element and the reference
     margin: 8,
 
