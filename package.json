@@ -4,6 +4,10 @@
     "description": "Ultra tiny, opinionated, positioning engine.",
     "author": "Simon Reinisch <trash@reinisch.io>",
     "license": "MIT",
+    "packageManager": "pnpm@8.0.0",
+    "engines": {
+        "node": "^20"
+    },
     "main": "./dist/nanopop.umd.js",
     "module": "./dist/nanopop.mjs",
     "types": "./dist/index.d.ts",
@@ -39,16 +43,13 @@
         "url": "https://github.com/Simonwep/nanopop.git"
     },
     "devDependencies": {
-        "@playwright/test": "^1.32.3",
-        "@typescript-eslint/eslint-plugin": "^5.58.0",
-        "@typescript-eslint/parser": "^5.58.0",
-        "eslint": "^8.38.0",
-        "playwright-chromium": "^1.32.3",
-        "playwright-firefox": "^1.32.3",
-        "playwright-webkit": "^1.32.3",
-        "typescript": "^5.0.4",
-        "vite": "^4.2.1",
-        "vite-plugin-banner": "^0.7.0",
-        "vite-plugin-dts": "^2.2.0"
+        "@playwright/test": "1.41.0",
+        "@typescript-eslint/eslint-plugin": "6.19.0",
+        "@typescript-eslint/parser": "6.19.0",
+        "eslint": "8.56.0",
+        "typescript": "5.3.3",
+        "vite": "5.0.11",
+        "vite-plugin-banner": "0.7.1",
+        "vite-plugin-dts": "3.7.1"
     }
 }
