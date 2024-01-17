@@ -44,6 +44,12 @@ type AvailableVariants = {
     he: number;
 };
 
+type AvailableArrowVariants = {
+    s: number;
+    m: number;
+    e: number;
+};
+
 type PositionPairs = [Direction, Direction];
 
 export type PositionMatch = 'ts' | 'tm' | 'te' | 'bs' | 'bm' | 'be' | 'ls' | 'lm' | 'le' | 'rs' | 'rm' | 're';
@@ -190,19 +196,37 @@ export const reposition = (
             if (arrow) {
                 // Calculate refBox's center offset from its variant position for arrow positioning
                 const refBoxCenterOffset = vertical ? refBox.width / 2 : refBox.height / 2;
+                const popBoxCenterOffset = variantSize / 2;
 
-                // When refBox is larger than popBox, have the arrow's variant position be the center of popBox instead.
-                const arrowVariantVal = refBoxCenterOffset * 2 < variantSize ?
-                    refBox[variantKey] + refBoxCenterOffset : variantVal + variantSize / 2;
+                // Check if refBox is larger than popBox
+                const isRefBoxLarger = refBoxCenterOffset > popBoxCenterOffset;
 
-                // Arrow position is either on one side of the popBox or the other.
-                if (positionVal < refBox[positionKey]) {
-                    positionVal += positionSize;
-                }
+                /**
+                 * Holds corresponding offset variants (start, middle, end) of arrow from the popper variant values.
+                 * When refBox is larger than popBox, have the arrow's variant position be the center of popBox instead.
+                 */
+                const arrowVariantStore: AvailableArrowVariants = {
+                    s: isRefBoxLarger ? popBoxCenterOffset : refBoxCenterOffset,
+                    m: popBoxCenterOffset,
+                    e: isRefBoxLarger ? popBoxCenterOffset : variantSize - refBoxCenterOffset,
+                };
+
+                /**
+                 * Holds offsets of top, left, bottom and right alignment of arrow from the popper position values.
+                 */
+                const arrowPositionStore: AvailablePositions = {
+                    t: positionSize,
+                    b: 0,
+                    r: 0,
+                    l: positionSize
+                };
+
+                const arrowVariantVal = variantVal + arrowVariantStore[v as keyof AvailableArrowVariants];
+                const arrowPositionVal = positionVal + arrowPositionStore[p as keyof AvailablePositions];
 
                 // Apply styles to arrow
                 arrow.style[variantKey] = `${arrowVariantVal}px`;
-                arrow.style[positionKey] = `${positionVal}px`;
+                arrow.style[positionKey] = `${arrowPositionVal}px`;
             }
 
             return (p + v) as PositionMatch;

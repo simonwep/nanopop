@@ -13,6 +13,7 @@ test.describe('Popper with arrow option', () => {
             test(`Should position ${pos} with proper arrow placement`, async ({ page }) => {
                 await testPage(page, `with-arrow-custom-position.html#${pos}`);
                 await testPage(page, `with-arrow-large-popper.html#${pos}`);
+                await testPage(page, `with-arrow-transformed-parent.html#${pos}`);
             });
         }
     }
