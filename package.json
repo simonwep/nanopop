@@ -1,6 +1,6 @@
 {
     "name": "nanopop",
-    "version": "2.4.0",
+    "version": "2.4.1",
     "description": "Ultra tiny, opinionated, positioning engine.",
     "author": "Simon Reinisch <trash@reinisch.io>",
     "license": "MIT",
