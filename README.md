@@ -28,7 +28,7 @@
 
 <br>
 
-Index is an ultra-tiny positioning engine. Hold up, isn't there [PopperJS](https://github.com/popperjs/popper-core)?
+Nanopop is an ultra-tiny positioning engine. Hold up, isn't there [PopperJS](https://github.com/popperjs/popper-core)?
 Yeah - and PopperJS is great! But there are tons of features that, in most cases, you just might not need. This library is less than a third of PopperJS.
 
 #### When should I use Nanopop and not PopperJS?
